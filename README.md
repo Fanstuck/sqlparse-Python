@@ -3,6 +3,9 @@ SQL blood relationship analysis tool based on Python sqlparse
 The research on SQL parsing and blood tracking can almost come to an end now. Since August 22, when I wrote the article "Parsing the syntax, morphology, and compiler files of HiveSQL source code" to explain this article in detail, I have studied SQL syntax parsing intermittently. Today, I have finally made some achievements. Generally, such research projects are supported by data governance and data middle office services, which play a great role in data security. I have covered a lot of content in the previous article, so I won't mention it here:
 
 We can see this article based on Python sqlparse's implementation of blood relationship tracking and parsing in SQL tables. Next, we will add the improvement of this function, that is, the implementation of blood relationship parsing in SQL fields. This is a function that must be completed for Hive blood relationship or MySQL. Of course, the implementation is also troublesome. Here we mainly talk about the ideas and implementation steps.
+![图片](https://user-images.githubusercontent.com/62112487/198919776-500df560-226d-486d-a8c9-9a3287e122ca.png)
+![图片](https://user-images.githubusercontent.com/62112487/198919770-f6c03b37-a524-489d-a8d0-a128bc9ebfe5.png)
+
 ## Implementation process
 ### Format Output
 ```
