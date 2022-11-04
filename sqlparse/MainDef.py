@@ -1,5 +1,8 @@
 #Autor fanstuck
 # the BSD License: https://opensource.org/licenses/BSD-3-Clause
+from pyecharts import options as opts
+from pyecharts.charts import Tree
+from pyecharts.charts import Sankey
 import sqlparse
 import textwrap
 from sqlparse.sql import Parenthesis,Function,Identifier, IdentifierList
