@@ -48,7 +48,78 @@ def __precedes_function_name(token_value):
         if keyword in token_value:
             return True
     return False
-
+#字段血缘可视化
+def column_visus():
+    list_table=[]
+    list_columns=[]
+    table_link_list=[]
+    for i in range(len(table_names)):
+        children_dict={"name":table_names[i]}
+        list_table.append(children_dict)
+    for i in range(1,len(column_names)):
+        for j in range(len(column_names[i])):
+            children_dict={"name":column_names[i][j]}
+            list_columns.append(children_dict)
+    nodes_list=list_table+list_columns
+    leaf_num=len(nodes_list)-len(table_names)
+    table_link_list=[]
+    columns_link_list=[]
+    for i in range(1,len(table_names)):
+        table_link_dict={'source':table_names[0],'target':table_names[i],'value':10}
+        table_link_list.append(table_link_dict)
+    for i in range(1,len(table_names)):
+        for j in range(len(column_names[i])):
+            columns_link_dict={'source':table_names[i],'target':column_names[i][j],'value':5}
+            columns_link_list.append(columns_link_dict)
+    links_list=table_link_list+columns_link_list
+    res = [i for n, i in enumerate(nodes_list) if i not in nodes_list[:n]]
+    pic = (
+        Sankey()
+        .add(
+            "表与字段",   #设置图例名称
+            nodes=res,   #传入节点数据
+            links=links_list,   #传入边和流量数据
+            linestyle_opt = opts.LineStyleOpts(opacity = 0.5, curve = 0.5, color = "source"),   #设置透明度、弯曲度、颜色，color可以是"source"或"target"
+            label_opts = opts.LabelOpts(position = "right"),   #设置标签位置，position可以是"top"、"left"、"right"、"bottom"等
+            node_width = 20,    #设置节点矩形的宽度
+            node_gap = 10,   #设置节点矩形的距离
+        )
+        .set_global_opts(title_opts=opts.TitleOpts(title="字段血缘"))   #设置图表标题
+    )
+    
+    return pic.render_notebook()
+#表数据可视化
+def Tree_visus(table_names,type_name):
+    if type_name != 'SELECT':
+        table_names=list(set(table_names))
+        list_children=[]
+        for i in range(len(table_names)-1):
+            children_dict={"name":table_names[i+1]}
+            list_children.append(children_dict)
+        dict_children={"children":list_children,"name": table_names[0]}
+        data=[dict_children]
+        c = (
+        Tree()
+        .add("", data)
+        .set_global_opts(title_opts=opts.TitleOpts(title="血缘-{}".format(type_name)))
+        .render_notebook()
+        )
+        return c
+    else :
+        table_names=list(set(table_names))
+        list_children=[]
+        for i in range(len(table_names)):
+            children_dict={"name":table_names[i]}
+            list_children.append(children_dict)
+        dict_children={"children":list_children,"name": 'SELECT'}
+        data=[dict_children]
+        c = (
+        Tree()
+        .add("", data)
+        .set_global_opts(title_opts=opts.TitleOpts(title="查询-{}".format(type_name)))
+        .render_notebook()
+        )
+        return c
 
 # 字段血缘
 def blood_column(statment):
