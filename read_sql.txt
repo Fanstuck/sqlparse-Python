@@ -1,0 +1,55 @@
+insert into temp.road_check_20220902
+select 
+m.id as mid,
+m.order_id as morder_id,
+m.finish_time as mfinish_time,
+m.link_id as mlink_id,
+m.sid as msid,
+m.ctime as mctime,
+n.linkid as nlinkid,
+n.level as nlevel,
+n.ctime as nctime,
+n.sids as nsids
+from
+(
+select
+        id,
+        order_id,
+        finish_time,
+        link_id,
+        sid,
+        from_unixtime(
+                cast(
+                        cast(
+                                get_json_object(
+                                split(regexp_replace(regexp_replace(frames , '\\[|\\]', ''), '\\}\\,\\{', '\\}\\;\\{'), '\\;')[0]
+                                , '$.timestamp'
+                                ) as bigint
+                        )/ 1000
+                 as bigint)
+        ,
+        'yyyyMMddHHmm')
+ as ctime
+from
+        dws_crowdsourcing.cs_order_link_mysql
+where
+        dt = 202208
+)m
+INNER JOIN 
+(
+select
+linkid ,
+levels,
+from_unixtime(
+                cast(
+                        cast(
+                                gpstime as bigint
+                        )/ 1000
+                 as bigint)
+        ,
+        'yyyyMMddHHmm')
+ as ctime
+,sids
+from track_point_traffic_dev.tk_track_traffic_info_offline where 
+dt > '2022-08-01' and level > 3
+)n on m.link_id = n.linkid and m.ctime = n.ctime
